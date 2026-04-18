@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DocAI — AI Hujjat Generatori</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f9fc;
+    --bg2: #ffffff;
+    --bg3: #f1f3f8;
+    --border: #e2e6f0;
+    --border2: #c8d0e7;
+    --text: #1a1d2e;
+    --text2: #5a6075;
+    --text3: #9298ad;
+    --blue: #3b6ff5;
+    --blue-light: #eef2fe;
+    --blue-text: #2952cc;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --green-text: #15803d;
+    --amber: #d97706;
+    --amber-light: #fffbeb;
+    --amber-text: #b45309;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--blue); display: flex; align-items: center;
+    justify-content: center; color: white; font-size: 16px; font-weight: 700;
+  }
+  .logo-name { font-size: 17px; font-weight: 600; color: var(--text); }
+  .logo-tag {
+    font-size: 10px; background: var(--blue-light); color: var(--blue-text);
+    padding: 2px 8px; border-radius: 20px; font-weight: 500;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .plan-toggle {
+    display: flex; background: var(--bg3); border-radius: 8px; padding: 3px;
+  }
+  .plan-btn {
+    font-size: 12px; padding: 5px 14px; border-radius: 6px;
+    border: none; cursor: pointer; background: transparent;
+    color: var(--text2); font-weight: 500; transition: all 0.15s;
+  }
+  .plan-btn.active {
+    background: var(--bg2); color: var(--blue);
+    box-shadow: var(--shadow);
+  }
+
+  /* ── LAYOUT ── */
+  .main { max-width: 860px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  /* ── PAGE TITLE ── */
+  .page-title { margin-bottom: 24px; }
+  .page-title h1 { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .page-title p { font-size: 14px; color: var(--text2); }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--bg3); border-radius: 10px; padding: 4px;
+    margin-bottom: 24px; width: fit-content;
+  }
+  .tab {
+    font-size: 13px; padding: 7px 18px; border-radius: 7px;
+    border: none; cursor: pointer; background: transparent;
+    color: var(--text2); font-weight: 500; transition: all 0.15s;
+  }
+  .tab.active { background: var(--bg2); color: var(--blue); box-shadow: var(--shadow); }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--bg2); border-radius: var(--radius-lg);
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+    overflow: hidden; margin-bottom: 16px;
+  }
+  .card-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .card-body { padding: 20px; }
+
+  /* ── DOC TYPE SELECTOR ── */
+  .doc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+  .doc-card {
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 14px 12px; cursor: pointer; transition: all 0.15s;
+    background: var(--bg2); text-align: center;
+  }
+  .doc-card:hover { border-color: var(--blue); background: var(--blue-light); }
+  .doc-card.sel { border-color: var(--blue); background: var(--blue-light); }
+  .doc-card.sel .dc-title { color: var(--blue-text); }
+  .dc-emoji { font-size: 22px; margin-bottom: 6px; }
+  .dc-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .dc-desc { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* ── FORM ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .fg { display: flex; flex-direction: column; gap: 5px; }
+  .fg.full { grid-column: 1 / -1; }
+  label { font-size: 12px; font-weight: 500; color: var(--text2); }
+
+  input, select, textarea {
+    font-size: 13px; padding: 9px 13px;
+    border-radius: var(--radius); border: 1px solid var(--border);
+    background: var(--bg2); color: var(--text);
+    width: 100%; outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(59,111,245,0.1);
+  }
+  textarea { resize: vertical; min-height: 88px; }
+
+  .char-count { font-size: 10px; color: var(--text3); text-align: right; margin-top: 3px; }
+
+  /* ── BANNER ── */
+  .banner {
+    background: var(--amber-light); border: 1px solid #fcd34d;
+    border-radius: var(--radius); padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .banner-text { font-size: 13px; color: var(--amber-text); font-weight: 500; }
+  .banner-sub { font-size: 11px; color: var(--amber); margin-top: 2px; }
+  .banner-btn {
+    font-size: 12px; padding: 7px 16px; border-radius: 7px;
+    border: none; cursor: pointer; background: var(--amber);
+    color: white; font-weight: 600; white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+  .banner-btn:hover { opacity: 0.85; }
+
+  /* ── GENERATE BTN ── */
+  .gen-btn {
+    width: 100%; padding: 13px; border-radius: var(--radius);
+    border: none; cursor: pointer; font-size: 14px; font-weight: 600;
+    background: var(--blue); color: white; transition: all 0.15s;
+    font-family: 'Inter', sans-serif; letter-spacing: 0.01em;
+  }
+  .gen-btn:hover { background: #2952cc; }
+  .gen-btn:active { transform: scale(0.99); }
+  .gen-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ── OUTPUT ── */
+  .output-section { margin-top: 16px; display: none; }
+  .out-header {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .out-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .out-badge {
+    font-size: 11px; padding: 3px 9px; border-radius: 20px;
+    background: var(--green-light); color: var(--green-text); font-weight: 500;
+  }
+  .out-actions { display: flex; gap: 8px; align-items: center; }
+  .out-btn {
+    font-size: 12px; padding: 6px 14px; border-radius: 7px;
+    border: 1px solid var(--border); cursor: pointer;
+    background: var(--bg2); color: var(--text2);
+    font-family: 'Inter', sans-serif; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .out-btn:hover { background: var(--bg3); }
+  .out-btn.pro {
+    background: var(--green-light); color: var(--green-text);
+    border-color: #86efac;
+  }
+  .out-body { padding: 20px; }
+  .out-text {
+    font-size: 13px; line-height: 1.8; color: var(--text);
+    white-space: pre-wrap; min-height: 100px;
+  }
+
+  /* ── LOADING ── */
+  .loading {
+    display: flex; align-items: center; gap: 8px;
+    padding: 16px 0; color: var(--text2); font-size: 13px;
+  }
+  .dots { display: flex; gap: 4px; }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--blue); animation: bounce 1.2s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,80%,100%{transform:translateY(0);opacity:0.35}
+    40%{transform:translateY(-7px);opacity:1}
+  }
+
+  /* ── STATS ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .stat-num { font-size: 28px; font-weight: 700; color: var(--text); }
+  .stat-label { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+  .income-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .income-table th { text-align: left; padding: 8px 12px; font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+  .income-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .income-table tr:last-child td { border-bottom: none; }
+  .income-table .amount { font-weight: 600; color: var(--green); }
+
+  /* ── HISTORY ── */
+  .history-list { display: flex; flex-direction: column; }
+  .h-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .h-item:last-child { border-bottom: none; }
+  .h-left { display: flex; align-items: center; gap: 12px; }
+  .h-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--blue-light); display: flex;
+    align-items: center; justify-content: center; font-size: 16px;
+  }
+  .h-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .h-meta { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .h-badge {
+    font-size: 11px; padding: 3px 9px; border-radius: 20px;
+    background: var(--green-light); color: var(--green-text); font-weight: 500;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center; padding: 32px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text3);
+    margin-top: 40px;
+  }
+  .footer a { color: var(--blue); text-decoration: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .header { padding: 0 16px; }
+    .main { padding: 20px 16px 60px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .fg.full { grid-column: 1; }
+    .doc-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .logo-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    <span class="logo-name">DocAI</span>
+    <span class="logo-tag">Beta</span>
+  </div>
+  <div class="header-right">
+    <div class="plan-toggle">
+      <button class="plan-btn active" onclick="setPlan('free',this)">Bepul</button>
+      <button class="plan-btn" onclick="setPlan('pro',this)">Pro — $4.99/oy</button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="page-title">
+    <h1>AI hujjat generatori</h1>
+    <p>CV, motivatsion xat va biznes ariza — bir daqiqada, AI yordamida</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('generate',this)">Yaratish</button>
+    <button class="tab" onclick="showTab('history',this)">Tarix</button>
+    <button class="tab" onclick="showTab('stats',this)">Daromad</button>
+  </div>
+
+  <!-- ── GENERATE TAB ── -->
+  <div id="tab-generate">
+
+    <!-- Doc type -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Hujjat turini tanlang</span>
+      </div>
+      <div class="card-body" style="padding-bottom:4px;">
+        <div class="doc-grid">
+          <div class="doc-card sel" onclick="selectDoc(this,'cv')">
+            <div class="dc-emoji">📄</div>
+            <div class="dc-title">CV / Rezyume</div>
+            <div class="dc-desc">Professional ish rezyumesi</div>
+          </div>
+          <div class="doc-card" onclick="selectDoc(this,'letter')">
+            <div class="dc-emoji">✉️</div>
+            <div class="dc-title">Motivatsion xat</div>
+            <div class="dc-desc">Cover letter</div>
+          </div>
+          <div class="doc-card" onclick="selectDoc(this,'business')">
+            <div class="dc-emoji">💼</div>
+            <div class="dc-title">Biznes ariza</div>
+            <div class="dc-desc">Taklif / proposal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Ma'lumotlaringiz</span>
+      </div>
+      <div class="card-body">
+
+        <div id="free-banner" class="banner">
+          <div>
+            <div class="banner-text">Bugun <span id="limit-text">2</span> ta bepul generatsiya qoldi</div>
+            <div class="banner-sub">Pro ga o'ting — cheksiz generatsiya + Word yuklab olish</div>
+          </div>
+          <button class="banner-btn" onclick="upgradePro()">Pro olish →</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="fg">
+            <label>Ism va familiya</label>
+            <input id="f-name" type="text" placeholder="Ali Valiyev" />
+          </div>
+          <div class="fg">
+            <label>Kasb / mutaxassislik</label>
+            <input id="f-job" type="text" placeholder="Frontend dasturchi" />
+          </div>
+          <div class="fg">
+            <label>Tajriba</label>
+            <select id="f-exp">
+              <option value="tajribasiz">Tajribasiz (0)</option>
+              <option value="1-2 yil">1-2 yil</option>
+              <option value="3-5 yil">3-5 yil</option>
+              <option value="5+ yil">5+ yil</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Hujjat tili</label>
+            <select id="f-lang">
+              <option value="uz">O'zbek tili</option>
+              <option value="en">English</option>
+              <option value="ru">Русский</option>
+            </select>
+          </div>
+          <div class="fg full">
+            <label>Ko'nikmalar (vergul bilan)</label>
+            <input id="f-skills" type="text" placeholder="HTML, CSS, JavaScript, Figma..." />
+          </div>
+          <div class="fg full">
+            <label>Qo'shimcha ma'lumot (ixtiyoriy)</label>
+            <textarea id="f-extra" placeholder="O'qigan joyi, yutuqlari, maqsadlari, tajribasi..."></textarea>
+            <div class="char-count" id="char-count">0 / 300</div>
+          </div>
+        </div>
+
+        <button class="gen-btn" id="gen-btn" onclick="generate()">
+          ✦ AI bilan yaratish
+        </button>
+      </div>
+    </div>
+
+    <!-- Output -->
+    <div class="card output-section" id="output-section">
+      <div class="out-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="out-title" id="out-title">Natija</span>
+          <span class="out-badge" id="out-badge" style="display:none;">✓ Tayyor</span>
+        </div>
+        <div class="out-actions">
+          <button class="out-btn" onclick="copyOut()">Nusxalash</button>
+          <button class="out-btn pro" onclick="downloadWord()">Word ↓ (Pro)</button>
+        </div>
+      </div>
+      <div class="out-body">
+        <div class="out-text" id="out-text"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── HISTORY TAB ── -->
+  <div id="tab-history" style="display:none;">
+    <div class="card">
+      <div class="card-header"><span class="card-title">So'nggi hujjatlar</span></div>
+      <div class="card-body" style="padding:0 20px;">
+        <div class="history-list">
+          <div class="h-item">
+            <div class="h-left">
+              <div class="h-icon">📄</div>
+              <div>
+                <div class="h-name">Sardor Toshmatov — CV</div>
+                <div class="h-meta">Bugun, 14:22 · O'zbek tili</div>
+              </div>
+            </div>
+            <span class="h-badge">Tayyor</span>
+          </div>
+          <div class="h-item">
+            <div class="h-left">
+              <div class="h-icon">✉️</div>
+              <div>
+                <div class="h-name">Google — Cover letter</div>
+                <div class="h-meta">Kecha, 19:05 · English</div>
+              </div>
+            </div>
+            <span class="h-badge">Tayyor</span>
+          </div>
+          <div class="h-item">
+            <div class="h-left">
+              <div class="h-icon">💼</div>
+              <div>
+                <div class="h-name">Startup biznes taklifi</div>
+                <div class="h-meta">3 kun oldin · O'zbek tili</div>
+              </div>
+            </div>
+            <span class="h-badge">Tayyor</span>
+          </div>
+          <div class="h-item">
+            <div class="h-left">
+              <div class="h-icon">📄</div>
+              <div>
+                <div class="h-name">Nilufar Karimova — CV</div>
+                <div class="h-meta">5 kun oldin · Russian</div>
+              </div>
+            </div>
+            <span class="h-badge">Tayyor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STATS TAB ── -->
+  <div id="tab-stats" style="display:none;">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">127</div>
+        <div class="stat-label">Jami foydalanuvchi</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:#16a34a;">$63</div>
+        <div class="stat-label">Oylik daromad</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">341</div>
+        <div class="stat-label">Yaratilgan hujjat</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">O'sish rejasi (Pro foydalanuvchilar)</span></div>
+      <div class="card-body" style="padding:0;">
+        <table class="income-table">
+          <thead>
+            <tr>
+              <th>Foydalanuvchi</th>
+              <th>Narx</th>
+              <th>Oylik daromad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>50 kishi</td>
+              <td>$4.99/oy</td>
+              <td class="amount">$249 / oy</td>
+            </tr>
+            <tr>
+              <td>100 kishi</td>
+              <td>$4.99/oy</td>
+              <td class="amount">$499 / oy</td>
+            </tr>
+            <tr>
+              <td>500 kishi</td>
+              <td>$4.99/oy</td>
+              <td class="amount">$2,495 / oy</td>
+            </tr>
+            <tr>
+              <td>1,000 kishi</td>
+              <td>$4.99/oy</td>
+              <td class="amount">$4,990 / oy</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:0;">
+      <div class="card-header"><span class="card-title">Keyingi qadamlar</span></div>
+      <div class="card-body">
+        <div style="font-size:13px;color:var(--text2);line-height:2;">
+          ✅ &nbsp;Saytni Netlify ga joylash (bepul)<br>
+          ✅ &nbsp;Claude API kaliti ulash<br>
+          ⬜ &nbsp;Stripe to'lov tizimi ulash<br>
+          ⬜ &nbsp;Telegram va Instagram reklama<br>
+          ⬜ &nbsp;Word yuklab olish funksiyasi (Pro)
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  DocAI &copy; 2025 · AI yordamida professional hujjatlar
+</footer>
+
+<script>
+  let currentDoc = 'cv';
+  let currentPlan = 'free';
+  let usedToday = 0;
+  const FREE_LIMIT = 2;
+
+  function setPlan(plan, btn) {
+    currentPlan = plan;
+    document.querySelectorAll('.plan-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const banner = document.getElementById('free-banner');
+    banner.style.display = plan === 'pro' ? 'none' : 'flex';
+  }
+
+  function upgradePro() {
+    alert('Pro obunasi uchun:\nStripe to\'lov tizimini ulang.\n\nHozircha demo rejimida ishlayapsiz.');
+  }
+
+  function showTab(name, btn) {
+    ['generate','history','stats'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+    });
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function selectDoc(el, type) {
+    document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('sel'));
+    el.classList.add('sel');
+    currentDoc = type;
+  }
+
+  document.getElementById('f-extra').addEventListener('input', function() {
+    if (this.value.length > 300) this.value = this.value.slice(0, 300);
+    document.getElementById('char-count').textContent = this.value.length + ' / 300';
+  });
+
+  function downloadWord() {
+    if (currentPlan !== 'pro') {
+      alert('Word yuklab olish faqat Pro foydalanuvchilar uchun!\n\nPro obunasi: $4.99/oy — cheksiz generatsiya + Word fayl.');
+    } else {
+      const text = document.getElementById('out-text').textContent;
+      const blob = new Blob([text], { type: 'application/msword' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'hujjat.doc';
+      a.click();
+    }
+  }
+
+  function copyOut() {
+    const text = document.getElementById('out-text').textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.textContent = '✓ Nusxalandi';
+      setTimeout(() => btn.textContent = 'Nusxalash', 2000);
+    });
+  }
+
+  async function generate() {
+    if (currentPlan === 'free' && usedToday >= FREE_LIMIT) {
+      alert('Bugungi bepul limitingiz tugadi!\nPro ga o\'ting — cheksiz generatsiya.');
+      return;
+    }
+
+    const name   = document.getElementById('f-name').value.trim() || 'Foydalanuvchi';
+    const job    = document.getElementById('f-job').value.trim() || 'Mutaxassis';
+    const exp    = document.getElementById('f-exp').value;
+    const lang   = document.getElementById('f-lang').value;
+    const skills = document.getElementById('f-skills').value.trim();
+    const extra  = document.getElementById('f-extra').value.trim();
+
+    const langMap = { uz: "O'zbek tilida yoz", en: 'Write in English', ru: 'Напиши на русском языке' };
+    const docPrompts = {
+      cv: `Professional CV / Rezyume yarat. ${langMap[lang]}.\n\nIsm: ${name}\nKasb: ${job}\nTajriba: ${exp}\nKo'nikmalar: ${skills || 'ko\'rsatilmagan'}\nQo'shimcha: ${extra || 'yo\'q'}\n\nFaqat CV matnini yoz. Hech qanday izoh berma.`,
+      letter: `Motivatsion xat (Cover Letter) yarat. ${langMap[lang]}.\n\nIsm: ${name}\nKasb: ${job}\nTajriba: ${exp}\nKo'nikmalar: ${skills || 'ko\'rsatilmagan'}\nQo'shimcha: ${extra || 'yo\'q'}\n\nFaqat xat matnini yoz.`,
+      business: `Biznes taklif ariza yarat. ${langMap[lang]}.\n\nIsm: ${name}\nSoha: ${job}\nTajriba: ${exp}\nKo'nikmalar: ${skills || 'ko\'rsatilmagan'}\nQo'shimcha: ${extra || 'yo\'q'}\n\nFaqat ariza matnini yoz.`
+    };
+
+    const docLabels = { cv: 'CV / Rezyume', letter: 'Motivatsion xat', business: 'Biznes ariza' };
+
+    const outSection = document.getElementById('output-section');
+    const outText    = document.getElementById('out-text');
+    const outTitle   = document.getElementById('out-title');
+    const outBadge   = document.getElementById('out-badge');
+    const btn        = document.getElementById('gen-btn');
+
+    outSection.style.display = 'block';
+    outTitle.textContent = docLabels[currentDoc] + ' yaratilmoqda...';
+    outBadge.style.display = 'none';
+    outText.innerHTML = '<div class="loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div> AI yozmoqda...</div>';
+    btn.disabled = true;
+    btn.textContent = '⏳ Yaratilmoqda...';
+    outSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: docPrompts[currentDoc] }]
+        })
+      });
+      const data = await res.json();
+      const result = data.content?.map(b => b.text || '').join('') || 'Xatolik yuz berdi.';
+      outText.textContent = result;
+      outTitle.textContent = docLabels[currentDoc];
+      outBadge.style.display = 'inline-block';
+      usedToday++;
+      if (currentPlan === 'free') {
+        const left = Math.max(0, FREE_LIMIT - usedToday);
+        document.getElementById('limit-text').textContent = left;
+      }
+    } catch (err) {
+      outText.textContent = 'Xatolik yuz berdi. Internet aloqasini tekshiring yoki sahifani yangilang.';
+      outTitle.textContent = 'Xatolik';
+    }
+
+    btn.disabled = false;
+    btn.textContent = '✦ AI bilan yaratish';
+  }
+</script>
+</body>
+</html>
