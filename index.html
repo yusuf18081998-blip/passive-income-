@@ -5,341 +5,670 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>DocAI — AI Hujjat Generatori</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #f8f9fc;
-    --bg2: #ffffff;
-    --bg3: #f1f3f8;
-    --border: #e2e6f0;
-    --border2: #c8d0e7;
-    --text: #1a1d2e;
-    --text2: #5a6075;
-    --text3: #9298ad;
-    --blue: #3b6ff5;
-    --blue-light: #eef2fe;
-    --blue-text: #2952cc;
-    --green: #16a34a;
-    --green-light: #f0fdf4;
-    --green-text: #15803d;
-    --amber: #d97706;
-    --amber-light: #fffbeb;
-    --amber-text: #b45309;
-    --radius: 10px;
-    --radius-lg: 14px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-  }
+:root {
+  --ink: #0d0f14;
+  --ink2: #3a3d4a;
+  --ink3: #7a7f94;
+  --paper: #f5f4f0;
+  --paper2: #eceae4;
+  --paper3: #e0ddd5;
+  --gold: #c9a84c;
+  --gold2: #f0d080;
+  --gold-bg: #fdf8ec;
+  --green: #2d7a4f;
+  --green-bg: #edf7f2;
+  --red: #c0392b;
+  --white: #ffffff;
+  --r: 12px;
+  --r2: 20px;
+  --sh: 0 2px 8px rgba(13,15,20,0.08);
+  --sh2: 0 8px 32px rgba(13,15,20,0.12);
+}
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.6;
-  }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+}
 
-  /* ── HEADER ── */
-  .header {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: var(--shadow);
-  }
+/* NOISE TEXTURE */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.4;
+}
 
-  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo-icon {
-    width: 34px; height: 34px; border-radius: 9px;
-    background: var(--blue); display: flex; align-items: center;
-    justify-content: center; color: white; font-size: 16px; font-weight: 700;
-  }
-  .logo-name { font-size: 17px; font-weight: 600; color: var(--text); }
-  .logo-tag {
-    font-size: 10px; background: var(--blue-light); color: var(--blue-text);
-    padding: 2px 8px; border-radius: 20px; font-weight: 500;
-  }
+/* ── HEADER ── */
+.header {
+  background: var(--ink);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
 
-  .header-right { display: flex; align-items: center; gap: 10px; }
-  .plan-toggle {
-    display: flex; background: var(--bg3); border-radius: 8px; padding: 3px;
-  }
-  .plan-btn {
-    font-size: 12px; padding: 5px 14px; border-radius: 6px;
-    border: none; cursor: pointer; background: transparent;
-    color: var(--text2); font-weight: 500; transition: all 0.15s;
-  }
-  .plan-btn.active {
-    background: var(--bg2); color: var(--blue);
-    box-shadow: var(--shadow);
-  }
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo-mark {
+  width: 36px; height: 36px;
+  background: var(--gold);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 800;
+  color: var(--ink);
+}
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.logo-beta {
+  font-size: 10px;
+  background: rgba(201,168,76,0.2);
+  color: var(--gold);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+  border: 1px solid rgba(201,168,76,0.3);
+}
 
-  /* ── LAYOUT ── */
-  .main { max-width: 860px; margin: 0 auto; padding: 28px 24px 80px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
 
-  /* ── PAGE TITLE ── */
-  .page-title { margin-bottom: 24px; }
-  .page-title h1 { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .page-title p { font-size: 14px; color: var(--text2); }
+.plan-pill {
+  display: flex;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 3px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.plan-btn {
+  font-size: 12px; padding: 5px 16px;
+  border-radius: 6px; border: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-weight: 500;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.plan-btn.active {
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 600;
+}
 
-  /* ── TABS ── */
-  .tabs {
-    display: flex; gap: 4px;
-    background: var(--bg3); border-radius: 10px; padding: 4px;
-    margin-bottom: 24px; width: fit-content;
-  }
-  .tab {
-    font-size: 13px; padding: 7px 18px; border-radius: 7px;
-    border: none; cursor: pointer; background: transparent;
-    color: var(--text2); font-weight: 500; transition: all 0.15s;
-  }
-  .tab.active { background: var(--bg2); color: var(--blue); box-shadow: var(--shadow); }
+/* ── HERO ── */
+.hero {
+  background: var(--ink);
+  padding: 48px 40px 56px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-label {
+  font-size: 11px;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+.hero h1 span { color: var(--gold); }
+.hero p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  max-width: 480px;
+}
 
-  /* ── CARD ── */
-  .card {
-    background: var(--bg2); border-radius: var(--radius-lg);
-    border: 1px solid var(--border); box-shadow: var(--shadow);
-    overflow: hidden; margin-bottom: 16px;
-  }
-  .card-header {
-    padding: 16px 20px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .card-title { font-size: 14px; font-weight: 600; color: var(--text); }
-  .card-body { padding: 20px; }
+/* ── TABS ── */
+.tabs-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--paper2);
+  padding: 0 40px;
+  display: flex;
+  gap: 0;
+  position: sticky;
+  top: 64px;
+  z-index: 90;
+}
+.tab {
+  font-size: 13px;
+  padding: 16px 20px;
+  border: none;
+  background: transparent;
+  color: var(--ink3);
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--gold);
+  font-weight: 600;
+}
 
-  /* ── DOC TYPE SELECTOR ── */
-  .doc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-  .doc-card {
-    border: 1.5px solid var(--border); border-radius: var(--radius);
-    padding: 14px 12px; cursor: pointer; transition: all 0.15s;
-    background: var(--bg2); text-align: center;
-  }
-  .doc-card:hover { border-color: var(--blue); background: var(--blue-light); }
-  .doc-card.sel { border-color: var(--blue); background: var(--blue-light); }
-  .doc-card.sel .dc-title { color: var(--blue-text); }
-  .dc-emoji { font-size: 22px; margin-bottom: 6px; }
-  .dc-title { font-size: 13px; font-weight: 600; color: var(--text); }
-  .dc-desc { font-size: 11px; color: var(--text3); margin-top: 2px; }
+/* ── MAIN ── */
+.main { max-width: 820px; margin: 0 auto; padding: 32px 24px 80px; }
 
-  /* ── FORM ── */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
-  .fg { display: flex; flex-direction: column; gap: 5px; }
-  .fg.full { grid-column: 1 / -1; }
-  label { font-size: 12px; font-weight: 500; color: var(--text2); }
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border-radius: var(--r2);
+  border: 1px solid var(--paper3);
+  box-shadow: var(--sh);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.card-head {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--paper2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.card-body { padding: 24px; }
 
-  input, select, textarea {
-    font-size: 13px; padding: 9px 13px;
-    border-radius: var(--radius); border: 1px solid var(--border);
-    background: var(--bg2); color: var(--text);
-    width: 100%; outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    font-family: 'Inter', sans-serif;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(59,111,245,0.1);
-  }
-  textarea { resize: vertical; min-height: 88px; }
+/* ── DOC TYPES ── */
+.doc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.doc-tile {
+  border: 1.5px solid var(--paper2);
+  border-radius: var(--r);
+  padding: 18px 14px;
+  cursor: pointer;
+  transition: all 0.18s;
+  background: var(--paper);
+  text-align: center;
+  position: relative;
+}
+.doc-tile:hover { border-color: var(--gold); background: var(--gold-bg); }
+.doc-tile.sel {
+  border-color: var(--gold);
+  background: var(--gold-bg);
+}
+.doc-tile.sel::after {
+  content: '✓';
+  position: absolute;
+  top: 8px; right: 10px;
+  font-size: 11px;
+  color: var(--gold);
+  font-weight: 700;
+}
+.dt-icon { font-size: 26px; margin-bottom: 8px; }
+.dt-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.dt-sub { font-size: 11px; color: var(--ink3); margin-top: 3px; }
 
-  .char-count { font-size: 10px; color: var(--text3); text-align: right; margin-top: 3px; }
+/* ── LIMIT BANNER ── */
+.limit-bar {
+  background: var(--gold-bg);
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+.limit-left { display: flex; align-items: center; gap: 10px; }
+.limit-icon { font-size: 18px; }
+.limit-text { font-size: 13px; color: var(--ink2); font-weight: 500; }
+.limit-sub { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+.limit-dots { display: flex; gap: 4px; margin-top: 6px; }
+.limit-dot {
+  width: 20px; height: 4px; border-radius: 2px;
+  background: var(--paper3);
+  transition: background 0.2s;
+}
+.limit-dot.used { background: var(--gold); }
 
-  /* ── BANNER ── */
-  .banner {
-    background: var(--amber-light); border: 1px solid #fcd34d;
-    border-radius: var(--radius); padding: 12px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .banner-text { font-size: 13px; color: var(--amber-text); font-weight: 500; }
-  .banner-sub { font-size: 11px; color: var(--amber); margin-top: 2px; }
-  .banner-btn {
-    font-size: 12px; padding: 7px 16px; border-radius: 7px;
-    border: none; cursor: pointer; background: var(--amber);
-    color: white; font-weight: 600; white-space: nowrap;
-    transition: opacity 0.15s;
-  }
-  .banner-btn:hover { opacity: 0.85; }
+.pro-btn {
+  font-size: 12px; padding: 8px 18px;
+  border-radius: 8px; border: none;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--white);
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.pro-btn:hover { background: var(--gold); color: var(--ink); }
 
-  /* ── GENERATE BTN ── */
-  .gen-btn {
-    width: 100%; padding: 13px; border-radius: var(--radius);
-    border: none; cursor: pointer; font-size: 14px; font-weight: 600;
-    background: var(--blue); color: white; transition: all 0.15s;
-    font-family: 'Inter', sans-serif; letter-spacing: 0.01em;
-  }
-  .gen-btn:hover { background: #2952cc; }
-  .gen-btn:active { transform: scale(0.99); }
-  .gen-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+/* ── FORM ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fg { display: flex; flex-direction: column; gap: 5px; }
+.fg.full { grid-column: 1 / -1; }
+label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 
-  /* ── OUTPUT ── */
-  .output-section { margin-top: 16px; display: none; }
-  .out-header {
-    padding: 14px 20px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .out-title { font-size: 14px; font-weight: 600; color: var(--text); }
-  .out-badge {
-    font-size: 11px; padding: 3px 9px; border-radius: 20px;
-    background: var(--green-light); color: var(--green-text); font-weight: 500;
-  }
-  .out-actions { display: flex; gap: 8px; align-items: center; }
-  .out-btn {
-    font-size: 12px; padding: 6px 14px; border-radius: 7px;
-    border: 1px solid var(--border); cursor: pointer;
-    background: var(--bg2); color: var(--text2);
-    font-family: 'Inter', sans-serif; font-weight: 500;
-    transition: all 0.15s;
-  }
-  .out-btn:hover { background: var(--bg3); }
-  .out-btn.pro {
-    background: var(--green-light); color: var(--green-text);
-    border-color: #86efac;
-  }
-  .out-body { padding: 20px; }
-  .out-text {
-    font-size: 13px; line-height: 1.8; color: var(--text);
-    white-space: pre-wrap; min-height: 100px;
-  }
+input, select, textarea {
+  font-size: 14px;
+  padding: 11px 14px;
+  border-radius: var(--r);
+  border: 1.5px solid var(--paper2);
+  background: var(--paper);
+  color: var(--ink);
+  width: 100%;
+  outline: none;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+}
+textarea { resize: vertical; min-height: 90px; }
+.char-hint { font-size: 10px; color: var(--ink3); text-align: right; }
 
-  /* ── LOADING ── */
-  .loading {
-    display: flex; align-items: center; gap: 8px;
-    padding: 16px 0; color: var(--text2); font-size: 13px;
-  }
-  .dots { display: flex; gap: 4px; }
-  .dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--blue); animation: bounce 1.2s infinite;
-  }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%,80%,100%{transform:translateY(0);opacity:0.35}
-    40%{transform:translateY(-7px);opacity:1}
-  }
+/* ── GEN BUTTON ── */
+.gen-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--r);
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  transition: all 0.18s;
+  letter-spacing: -0.01em;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.gen-btn:hover { background: var(--gold); color: var(--ink); }
+.gen-btn:active { transform: scale(0.99); }
+.gen-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; background: var(--ink); color: var(--white); }
 
-  /* ── STATS ── */
-  .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
-  .stat-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; text-align: center;
-    box-shadow: var(--shadow);
-  }
-  .stat-num { font-size: 28px; font-weight: 700; color: var(--text); }
-  .stat-label { font-size: 12px; color: var(--text2); margin-top: 3px; }
+/* ── OUTPUT ── */
+.output-card { display: none; }
+.out-head {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--paper2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.out-title-wrap { display: flex; align-items: center; gap: 10px; }
+.out-ready {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--green-bg);
+  color: var(--green);
+  font-weight: 600;
+  display: none;
+}
+.out-actions { display: flex; gap: 8px; }
+.out-btn {
+  font-size: 12px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--paper2);
+  cursor: pointer;
+  background: var(--white);
+  color: var(--ink2);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.out-btn:hover { border-color: var(--ink); color: var(--ink); }
+.out-btn.gold-btn {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
+}
+.out-btn.gold-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.out-body { padding: 24px; }
+.out-text {
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: var(--ink2);
+  white-space: pre-wrap;
+  min-height: 80px;
+}
 
-  .income-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .income-table th { text-align: left; padding: 8px 12px; font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
-  .income-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
-  .income-table tr:last-child td { border-bottom: none; }
-  .income-table .amount { font-weight: 600; color: var(--green); }
+/* ── LOADING ── */
+.loading-wrap {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0;
+  color: var(--ink3);
+  font-size: 13px;
+}
+.dots { display: flex; gap: 4px; }
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pulse {
+  0%,80%,100% { transform: scale(0.6); opacity: 0.3; }
+  40% { transform: scale(1.2); opacity: 1; }
+}
 
-  /* ── HISTORY ── */
-  .history-list { display: flex; flex-direction: column; }
-  .h-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 0; border-bottom: 1px solid var(--border);
-  }
-  .h-item:last-child { border-bottom: none; }
-  .h-left { display: flex; align-items: center; gap: 12px; }
-  .h-icon {
-    width: 36px; height: 36px; border-radius: 9px;
-    background: var(--blue-light); display: flex;
-    align-items: center; justify-content: center; font-size: 16px;
-  }
-  .h-name { font-size: 13px; font-weight: 500; color: var(--text); }
-  .h-meta { font-size: 11px; color: var(--text3); margin-top: 1px; }
-  .h-badge {
-    font-size: 11px; padding: 3px 9px; border-radius: 20px;
-    background: var(--green-light); color: var(--green-text); font-weight: 500;
-  }
+/* ── HISTORY ── */
+.h-list { display: flex; flex-direction: column; }
+.h-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--paper2);
+}
+.h-item:last-child { border-bottom: none; }
+.h-left { display: flex; align-items: center; gap: 12px; }
+.h-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--gold-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  border: 1px solid rgba(201,168,76,0.2);
+}
+.h-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.h-meta { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+.h-tag {
+  font-size: 11px; padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--green-bg);
+  color: var(--green);
+  font-weight: 600;
+}
 
-  /* ── FOOTER ── */
-  .footer {
-    text-align: center; padding: 32px;
-    border-top: 1px solid var(--border);
-    font-size: 12px; color: var(--text3);
-    margin-top: 40px;
-  }
-  .footer a { color: var(--blue); text-decoration: none; }
+/* ── STATS ── */
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+.stat-tile {
+  background: var(--white);
+  border: 1px solid var(--paper3);
+  border-radius: var(--r2);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--sh);
+}
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px; font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+.stat-label { font-size: 12px; color: var(--ink3); margin-top: 4px; }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 600px) {
-    .header { padding: 0 16px; }
-    .main { padding: 20px 16px 60px; }
-    .form-grid { grid-template-columns: 1fr; }
-    .fg.full { grid-column: 1; }
-    .doc-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .logo-tag { display: none; }
-  }
+.income-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.income-tbl th {
+  text-align: left; padding: 10px 16px;
+  font-size: 10px; color: var(--ink3);
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--paper2);
+  background: var(--paper);
+}
+.income-tbl td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--paper2);
+  color: var(--ink2);
+}
+.income-tbl tr:last-child td { border-bottom: none; }
+.income-tbl .amt { font-weight: 700; color: var(--green); }
+
+.steps-list { display: flex; flex-direction: column; gap: 12px; }
+.step-item {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px;
+}
+.step-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  flex-shrink: 0;
+}
+.step-check.done { background: var(--green-bg); color: var(--green); }
+.step-check.todo {
+  background: var(--paper2);
+  color: var(--ink3);
+  border: 1.5px dashed var(--paper3);
+}
+
+/* ── PRO MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(13,15,20,0.7);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white);
+  border-radius: var(--r2);
+  max-width: 420px; width: 100%;
+  overflow: hidden;
+  box-shadow: var(--sh2);
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal-top {
+  background: var(--ink);
+  padding: 28px 28px 24px;
+  text-align: center;
+}
+.modal-icon { font-size: 36px; margin-bottom: 10px; }
+.modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px; font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.modal-sub { font-size: 13px; color: rgba(255,255,255,0.5); }
+.modal-price {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px; font-weight: 800;
+  color: var(--gold);
+  margin: 16px 0 4px;
+}
+.modal-period { font-size: 12px; color: rgba(255,255,255,0.4); }
+.modal-body { padding: 24px 28px; }
+.modal-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.modal-features li {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--ink2);
+}
+.feat-check {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green-bg);
+  color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0;
+}
+.stripe-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--r);
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  background: var(--gold);
+  color: var(--ink);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.stripe-btn:hover { background: var(--gold2); }
+.modal-note { font-size: 11px; color: var(--ink3); text-align: center; margin-top: 12px; }
+.modal-close {
+  font-size: 12px; color: var(--ink3);
+  text-align: center; margin-top: 10px;
+  cursor: pointer; text-decoration: underline;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .hero { padding: 32px 16px 40px; }
+  .tabs-bar { padding: 0 16px; overflow-x: auto; }
+  .main { padding: 20px 16px 60px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .fg.full { grid-column: 1; }
+  .doc-grid { grid-template-columns: 1fr 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .logo-beta { display: none; }
+}
 </style>
 </head>
 <body>
 
+<!-- PRO MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-icon">⚡</div>
+      <div class="modal-title">Pro rejimga o'ting</div>
+      <div class="modal-sub">Professional hujjatlar uchun to'liq kirish</div>
+      <div class="modal-price">$4.99</div>
+      <div class="modal-period">oyiga · istalgan vaqt bekor qilish mumkin</div>
+    </div>
+    <div class="modal-body">
+      <ul class="modal-features">
+        <li><div class="feat-check">✓</div> Cheksiz hujjat generatsiya</li>
+        <li><div class="feat-check">✓</div> Word (.docx) formatida yuklab olish</li>
+        <li><div class="feat-check">✓</div> Barcha tillar (O'zbek, English, Русский)</li>
+        <li><div class="feat-check">✓</div> Yuqori sifatli natijalar</li>
+        <li><div class="feat-check">✓</div> Tarix va arxiv</li>
+      </ul>
+      <button class="stripe-btn" onclick="goToStripe()">
+        💳 &nbsp; Stripe orqali to'lash
+      </button>
+      <div class="modal-note">🔒 Xavfsiz to'lov · Stripe tomonidan himoyalangan</div>
+      <div class="modal-close" onclick="closeModal()">Yopish</div>
+    </div>
+  </div>
+</div>
+
 <!-- HEADER -->
 <header class="header">
-  <div class="logo">
-    <div class="logo-icon">✦</div>
-    <span class="logo-name">DocAI</span>
-    <span class="logo-tag">Beta</span>
-  </div>
+  <a class="logo" href="#">
+    <div class="logo-mark">D</div>
+    <span class="logo-text">DocAI</span>
+    <span class="logo-beta">Beta</span>
+  </a>
   <div class="header-right">
-    <div class="plan-toggle">
-      <button class="plan-btn active" onclick="setPlan('free',this)">Bepul</button>
-      <button class="plan-btn" onclick="setPlan('pro',this)">Pro — $4.99/oy</button>
+    <div class="plan-pill">
+      <button class="plan-btn active" id="btn-free" onclick="setPlan('free')">Bepul</button>
+      <button class="plan-btn" id="btn-pro" onclick="openModal()">Pro — $4.99/oy</button>
     </div>
   </div>
 </header>
 
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">✦ AI yordamida</div>
+  <h1>Professional hujjat<br><span>bir daqiqada</span></h1>
+  <p>CV, motivatsion xat va biznes ariza — AI yordamida, o'zbek tilida</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab active" onclick="showTab('generate',this)">✦ Yaratish</button>
+  <button class="tab" onclick="showTab('history',this)">Tarix</button>
+  <button class="tab" onclick="showTab('stats',this)">Daromad</button>
+</div>
+
 <!-- MAIN -->
 <main class="main">
-
-  <div class="page-title">
-    <h1>AI hujjat generatori</h1>
-    <p>CV, motivatsion xat va biznes ariza — bir daqiqada, AI yordamida</p>
-  </div>
-
-  <!-- TABS -->
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('generate',this)">Yaratish</button>
-    <button class="tab" onclick="showTab('history',this)">Tarix</button>
-    <button class="tab" onclick="showTab('stats',this)">Daromad</button>
-  </div>
 
   <!-- ── GENERATE TAB ── -->
   <div id="tab-generate">
 
-    <!-- Doc type -->
+    <!-- Hujjat turi -->
     <div class="card">
-      <div class="card-header">
+      <div class="card-head">
         <span class="card-title">Hujjat turini tanlang</span>
       </div>
-      <div class="card-body" style="padding-bottom:4px;">
+      <div class="card-body">
         <div class="doc-grid">
-          <div class="doc-card sel" onclick="selectDoc(this,'cv')">
-            <div class="dc-emoji">📄</div>
-            <div class="dc-title">CV / Rezyume</div>
-            <div class="dc-desc">Professional ish rezyumesi</div>
+          <div class="doc-tile sel" onclick="selectDoc(this,'cv')">
+            <div class="dt-icon">📄</div>
+            <div class="dt-name">CV / Rezyume</div>
+            <div class="dt-sub">Ish uchun</div>
           </div>
-          <div class="doc-card" onclick="selectDoc(this,'letter')">
-            <div class="dc-emoji">✉️</div>
-            <div class="dc-title">Motivatsion xat</div>
-            <div class="dc-desc">Cover letter</div>
+          <div class="doc-tile" onclick="selectDoc(this,'letter')">
+            <div class="dt-icon">✉️</div>
+            <div class="dt-name">Motivatsion xat</div>
+            <div class="dt-sub">Cover letter</div>
           </div>
-          <div class="doc-card" onclick="selectDoc(this,'business')">
-            <div class="dc-emoji">💼</div>
-            <div class="dc-title">Biznes ariza</div>
-            <div class="dc-desc">Taklif / proposal</div>
+          <div class="doc-tile" onclick="selectDoc(this,'business')">
+            <div class="dt-icon">💼</div>
+            <div class="dt-name">Biznes ariza</div>
+            <div class="dt-sub">Taklif / proposal</div>
           </div>
         </div>
       </div>
@@ -347,17 +676,28 @@
 
     <!-- Form -->
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Ma'lumotlaringiz</span>
+      <div class="card-head">
+        <span class="card-title">Ma'lumotlaringizni kiriting</span>
       </div>
       <div class="card-body">
 
-        <div id="free-banner" class="banner">
-          <div>
-            <div class="banner-text">Bugun <span id="limit-text">2</span> ta bepul generatsiya qoldi</div>
-            <div class="banner-sub">Pro ga o'ting — cheksiz generatsiya + Word yuklab olish</div>
+        <!-- Limit bar -->
+        <div class="limit-bar" id="limit-bar">
+          <div class="limit-left">
+            <div class="limit-icon">⚡</div>
+            <div>
+              <div class="limit-text">Bugun <strong id="limit-num">3</strong> ta bepul generatsiya qoldi</div>
+              <div class="limit-sub">Pro → cheksiz generatsiya + Word yuklab olish</div>
+              <div class="limit-dots" id="limit-dots">
+                <div class="limit-dot used"></div>
+                <div class="limit-dot used"></div>
+                <div class="limit-dot used"></div>
+                <div class="limit-dot"></div>
+                <div class="limit-dot"></div>
+              </div>
+            </div>
           </div>
-          <button class="banner-btn" onclick="upgradePro()">Pro olish →</button>
+          <button class="pro-btn" onclick="openModal()">Pro olish →</button>
         </div>
 
         <div class="form-grid">
@@ -372,7 +712,7 @@
           <div class="fg">
             <label>Tajriba</label>
             <select id="f-exp">
-              <option value="tajribasiz">Tajribasiz (0)</option>
+              <option value="tajribasiz">Tajribasiz (0 yil)</option>
               <option value="1-2 yil">1-2 yil</option>
               <option value="3-5 yil">3-5 yil</option>
               <option value="5+ yil">5+ yil</option>
@@ -388,31 +728,32 @@
           </div>
           <div class="fg full">
             <label>Ko'nikmalar (vergul bilan)</label>
-            <input id="f-skills" type="text" placeholder="HTML, CSS, JavaScript, Figma..." />
+            <input id="f-skills" type="text" placeholder="HTML, CSS, JavaScript, Figma, React..." />
           </div>
           <div class="fg full">
             <label>Qo'shimcha ma'lumot (ixtiyoriy)</label>
-            <textarea id="f-extra" placeholder="O'qigan joyi, yutuqlari, maqsadlari, tajribasi..."></textarea>
-            <div class="char-count" id="char-count">0 / 300</div>
+            <textarea id="f-extra" placeholder="O'qigan joyi, yutuqlari, maqsadlari, loyihalari..."></textarea>
+            <div class="char-hint" id="char-hint">0 / 300</div>
           </div>
         </div>
 
         <button class="gen-btn" id="gen-btn" onclick="generate()">
-          ✦ AI bilan yaratish
+          <span>✦</span> AI bilan yaratish
         </button>
+
       </div>
     </div>
 
     <!-- Output -->
-    <div class="card output-section" id="output-section">
-      <div class="out-header">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="out-title" id="out-title">Natija</span>
-          <span class="out-badge" id="out-badge" style="display:none;">✓ Tayyor</span>
+    <div class="card output-card" id="output-card">
+      <div class="out-head">
+        <div class="out-title-wrap">
+          <span class="card-title" id="out-title">Natija</span>
+          <span class="out-ready" id="out-ready">✓ Tayyor</span>
         </div>
         <div class="out-actions">
-          <button class="out-btn" onclick="copyOut()">Nusxalash</button>
-          <button class="out-btn pro" onclick="downloadWord()">Word ↓ (Pro)</button>
+          <button class="out-btn" onclick="copyOut(event)">Nusxalash</button>
+          <button class="out-btn gold-btn" onclick="downloadWord()">Word ↓</button>
         </div>
       </div>
       <div class="out-body">
@@ -425,49 +766,13 @@
   <!-- ── HISTORY TAB ── -->
   <div id="tab-history" style="display:none;">
     <div class="card">
-      <div class="card-header"><span class="card-title">So'nggi hujjatlar</span></div>
-      <div class="card-body" style="padding:0 20px;">
-        <div class="history-list">
-          <div class="h-item">
-            <div class="h-left">
-              <div class="h-icon">📄</div>
-              <div>
-                <div class="h-name">Sardor Toshmatov — CV</div>
-                <div class="h-meta">Bugun, 14:22 · O'zbek tili</div>
-              </div>
-            </div>
-            <span class="h-badge">Tayyor</span>
-          </div>
-          <div class="h-item">
-            <div class="h-left">
-              <div class="h-icon">✉️</div>
-              <div>
-                <div class="h-name">Google — Cover letter</div>
-                <div class="h-meta">Kecha, 19:05 · English</div>
-              </div>
-            </div>
-            <span class="h-badge">Tayyor</span>
-          </div>
-          <div class="h-item">
-            <div class="h-left">
-              <div class="h-icon">💼</div>
-              <div>
-                <div class="h-name">Startup biznes taklifi</div>
-                <div class="h-meta">3 kun oldin · O'zbek tili</div>
-              </div>
-            </div>
-            <span class="h-badge">Tayyor</span>
-          </div>
-          <div class="h-item">
-            <div class="h-left">
-              <div class="h-icon">📄</div>
-              <div>
-                <div class="h-name">Nilufar Karimova — CV</div>
-                <div class="h-meta">5 kun oldin · Russian</div>
-              </div>
-            </div>
-            <span class="h-badge">Tayyor</span>
-          </div>
+      <div class="card-head"><span class="card-title">So'nggi hujjatlar</span></div>
+      <div class="card-body" style="padding: 0 24px;">
+        <div class="h-list" id="history-list">
+          <!-- JS tomonidan to'ldiriladi -->
+        </div>
+        <div id="history-empty" style="padding:24px 0;text-align:center;color:var(--ink3);font-size:13px;display:none;">
+          Hali hujjat yaratilmagan
         </div>
       </div>
     </div>
@@ -475,67 +780,70 @@
 
   <!-- ── STATS TAB ── -->
   <div id="tab-stats" style="display:none;">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-num">127</div>
-        <div class="stat-label">Jami foydalanuvchi</div>
+    <div class="stats-row">
+      <div class="stat-tile">
+        <div class="stat-num" id="s-users">0</div>
+        <div class="stat-label">Foydalanuvchi</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num" style="color:#16a34a;">$63</div>
+      <div class="stat-tile">
+        <div class="stat-num" id="s-income" style="color:var(--green);">$0</div>
         <div class="stat-label">Oylik daromad</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num">341</div>
+      <div class="stat-tile">
+        <div class="stat-num" id="s-docs">0</div>
         <div class="stat-label">Yaratilgan hujjat</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header"><span class="card-title">O'sish rejasi (Pro foydalanuvchilar)</span></div>
+      <div class="card-head"><span class="card-title">O'sish rejasi (Pro foydalanuvchilar)</span></div>
       <div class="card-body" style="padding:0;">
-        <table class="income-table">
+        <table class="income-tbl">
           <thead>
             <tr>
-              <th>Foydalanuvchi</th>
+              <th>Pro foydalanuvchi</th>
               <th>Narx</th>
               <th>Oylik daromad</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>50 kishi</td>
-              <td>$4.99/oy</td>
-              <td class="amount">$249 / oy</td>
-            </tr>
-            <tr>
-              <td>100 kishi</td>
-              <td>$4.99/oy</td>
-              <td class="amount">$499 / oy</td>
-            </tr>
-            <tr>
-              <td>500 kishi</td>
-              <td>$4.99/oy</td>
-              <td class="amount">$2,495 / oy</td>
-            </tr>
-            <tr>
-              <td>1,000 kishi</td>
-              <td>$4.99/oy</td>
-              <td class="amount">$4,990 / oy</td>
-            </tr>
+            <tr><td>50 kishi</td><td>$4.99/oy</td><td class="amt">$249 / oy</td></tr>
+            <tr><td>100 kishi</td><td>$4.99/oy</td><td class="amt">$499 / oy</td></tr>
+            <tr><td>500 kishi</td><td>$4.99/oy</td><td class="amt">$2,495 / oy</td></tr>
+            <tr><td>1,000 kishi</td><td>$4.99/oy</td><td class="amt">$4,990 / oy</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <div class="card" style="margin-top:0;">
-      <div class="card-header"><span class="card-title">Keyingi qadamlar</span></div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">Keyingi qadamlar</span></div>
       <div class="card-body">
-        <div style="font-size:13px;color:var(--text2);line-height:2;">
-          ✅ &nbsp;Saytni Netlify ga joylash (bepul)<br>
-          ✅ &nbsp;Claude API kaliti ulash<br>
-          ⬜ &nbsp;Stripe to'lov tizimi ulash<br>
-          ⬜ &nbsp;Telegram va Instagram reklama<br>
-          ⬜ &nbsp;Word yuklab olish funksiyasi (Pro)
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-check done">✓</div>
+            <span>Sayt dizayni va AI integratsiya</span>
+          </div>
+          <div class="step-item">
+            <div class="step-check done">✓</div>
+            <span>Claude API ulash</span>
+          </div>
+          <div class="step-item">
+            <div class="step-check todo">3</div>
+            <span>Stripe to'lov tizimi ulash</span>
+          </div>
+          <div class="step-item">
+            <div class="step-check todo">4</div>
+            <span>Netlify ga deploy qilish</span>
+          </div>
+          <div class="step-item">
+            <div class="step-check todo">5</div>
+            <span>Telegram va Instagram reklama</span>
+          </div>
+          <div class="step-item">
+            <div class="step-check todo">6</div>
+            <span>Word yuklab olish funksiyasi</span>
+          </div>
         </div>
       </div>
     </div>
@@ -543,134 +851,251 @@
 
 </main>
 
-<footer class="footer">
-  DocAI &copy; 2025 · AI yordamida professional hujjatlar
-</footer>
-
 <script>
-  let currentDoc = 'cv';
-  let currentPlan = 'free';
-  let usedToday = 0;
-  const FREE_LIMIT = 2;
+// ── STATE ──
+let currentDoc = 'cv';
+let currentPlan = 'free';
+let usedToday = 0;
+const FREE_LIMIT = 3;
+let historyItems = [];
+let totalDocs = 0;
 
-  function setPlan(plan, btn) {
-    currentPlan = plan;
-    document.querySelectorAll('.plan-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const banner = document.getElementById('free-banner');
-    banner.style.display = plan === 'pro' ? 'none' : 'flex';
+// ── STRIPE LINK (O'ZINGIZNIKI QOYING) ──
+const STRIPE_LINK = 'https://buy.stripe.com/YOUR_LINK_HERE';
+
+// ── PLAN ──
+function setPlan(plan) {
+  currentPlan = plan;
+  document.getElementById('btn-free').classList.toggle('active', plan === 'free');
+  document.getElementById('btn-pro').classList.toggle('active', plan === 'pro');
+  document.getElementById('limit-bar').style.display = plan === 'pro' ? 'none' : 'flex';
+  updateStats();
+}
+
+// ── MODAL ──
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+function goToStripe() {
+  if (STRIPE_LINK === 'https://buy.stripe.com/YOUR_LINK_HERE') {
+    alert('⚠️ Stripe linkni STRIPE_LINK o\'zgaruvchisiga qoying!\n\nstripe.com da payment link yarating va almashtiring.');
+    return;
   }
+  window.open(STRIPE_LINK, '_blank');
+  closeModal();
+}
 
-  function upgradePro() {
-    alert('Pro obunasi uchun:\nStripe to\'lov tizimini ulang.\n\nHozircha demo rejimida ishlayapsiz.');
-  }
-
-  function showTab(name, btn) {
-    ['generate','history','stats'].forEach(t => {
-      document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
-    });
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  function selectDoc(el, type) {
-    document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('sel'));
-    el.classList.add('sel');
-    currentDoc = type;
-  }
-
-  document.getElementById('f-extra').addEventListener('input', function() {
-    if (this.value.length > 300) this.value = this.value.slice(0, 300);
-    document.getElementById('char-count').textContent = this.value.length + ' / 300';
+// ── TABS ──
+function showTab(name, btn) {
+  ['generate','history','stats'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
   });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  if (name === 'history') renderHistory();
+  if (name === 'stats') updateStats();
+}
 
-  function downloadWord() {
-    if (currentPlan !== 'pro') {
-      alert('Word yuklab olish faqat Pro foydalanuvchilar uchun!\n\nPro obunasi: $4.99/oy — cheksiz generatsiya + Word fayl.');
-    } else {
-      const text = document.getElementById('out-text').textContent;
-      const blob = new Blob([text], { type: 'application/msword' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'hujjat.doc';
-      a.click();
-    }
+// ── DOC SELECT ──
+function selectDoc(el, type) {
+  document.querySelectorAll('.doc-tile').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  currentDoc = type;
+}
+
+// ── CHAR COUNT ──
+document.getElementById('f-extra').addEventListener('input', function() {
+  if (this.value.length > 300) this.value = this.value.slice(0, 300);
+  document.getElementById('char-hint').textContent = this.value.length + ' / 300';
+});
+
+// ── LIMIT DOTS ──
+function updateLimitDots() {
+  const left = Math.max(0, FREE_LIMIT - usedToday);
+  document.getElementById('limit-num').textContent = left;
+  const dots = document.querySelectorAll('.limit-dot');
+  dots.forEach((d, i) => {
+    d.classList.toggle('used', i < usedToday);
+  });
+}
+
+// ── HISTORY ──
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  const empty = document.getElementById('history-empty');
+  if (historyItems.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  const icons = { cv: '📄', letter: '✉️', business: '💼' };
+  const labels = { cv: 'CV / Rezyume', letter: 'Motivatsion xat', business: 'Biznes ariza' };
+  list.innerHTML = historyItems.slice().reverse().map(item => `
+    <div class="h-item">
+      <div class="h-left">
+        <div class="h-icon">${icons[item.type]}</div>
+        <div>
+          <div class="h-name">${item.name} — ${labels[item.type]}</div>
+          <div class="h-meta">${item.time} · ${item.lang}</div>
+        </div>
+      </div>
+      <span class="h-tag">Tayyor</span>
+    </div>
+  `).join('');
+}
+
+// ── STATS ──
+function updateStats() {
+  const proUsers = currentPlan === 'pro' ? 1 : 0;
+  document.getElementById('s-users').textContent = proUsers;
+  document.getElementById('s-income').textContent = '$' + (proUsers * 4.99).toFixed(2);
+  document.getElementById('s-docs').textContent = totalDocs;
+}
+
+// ── COPY ──
+function copyOut(e) {
+  const text = document.getElementById('out-text').textContent;
+  if (!text || text.includes('yozmoqda')) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = e.target;
+    btn.textContent = '✓ Nusxalandi';
+    setTimeout(() => btn.textContent = 'Nusxalash', 2000);
+  });
+}
+
+// ── WORD DOWNLOAD ──
+function downloadWord() {
+  if (currentPlan !== 'pro') {
+    openModal();
+    return;
+  }
+  const text = document.getElementById('out-text').textContent;
+  if (!text) return;
+  const blob = new Blob(['\ufeff' + text], { type: 'application/msword;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'hujjat.doc';
+  a.click();
+}
+
+// ── GENERATE ──
+async function generate() {
+  if (currentPlan === 'free' && usedToday >= FREE_LIMIT) {
+    openModal();
+    return;
   }
 
-  function copyOut() {
-    const text = document.getElementById('out-text').textContent;
-    if (!text) return;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = event.target;
-      btn.textContent = '✓ Nusxalandi';
-      setTimeout(() => btn.textContent = 'Nusxalash', 2000);
+  const name   = document.getElementById('f-name').value.trim() || 'Foydalanuvchi';
+  const job    = document.getElementById('f-job').value.trim() || 'Mutaxassis';
+  const exp    = document.getElementById('f-exp').value;
+  const lang   = document.getElementById('f-lang').value;
+  const skills = document.getElementById('f-skills').value.trim();
+  const extra  = document.getElementById('f-extra').value.trim();
+
+  const langMap = {
+    uz: "Faqat O'zbek tilida yoz",
+    en: 'Write only in English',
+    ru: 'Напиши только на русском языке'
+  };
+  const langLabel = { uz: "O'zbek tili", en: 'English', ru: 'Русский' };
+  const docLabels = { cv: 'CV / Rezyume', letter: 'Motivatsion xat', business: 'Biznes ariza' };
+
+  const prompts = {
+    cv: `Professional CV / Rezyume yarat. ${langMap[lang]}.
+
+Ism: ${name}
+Kasb: ${job}
+Tajriba: ${exp}
+Ko'nikmalar: ${skills || "ko'rsatilmagan"}
+Qo'shimcha: ${extra || "yo'q"}
+
+Faqat CV matnini yoz. Izoh berma. Bo'limlar: Shaxsiy ma'lumot, Ko'nikmalar, Tajriba, Ta'lim.`,
+
+    letter: `Motivatsion xat (Cover Letter) yarat. ${langMap[lang]}.
+
+Ism: ${name}
+Kasb: ${job}
+Tajriba: ${exp}
+Ko'nikmalar: ${skills || "ko'rsatilmagan"}
+Qo'shimcha: ${extra || "yo'q"}
+
+Faqat professional xat matnini yoz. Izoh berma.`,
+
+    business: `Biznes taklif ariza yarat. ${langMap[lang]}.
+
+Ism/Kompaniya: ${name}
+Soha: ${job}
+Tajriba: ${exp}
+Ko'nikmalar: ${skills || "ko'rsatilmagan"}
+Qo'shimcha: ${extra || "yo'q"}
+
+Faqat ariza matnini yoz. Izoh berma.`
+  };
+
+  const outCard  = document.getElementById('output-card');
+  const outText  = document.getElementById('out-text');
+  const outTitle = document.getElementById('out-title');
+  const outReady = document.getElementById('out-ready');
+  const btn      = document.getElementById('gen-btn');
+
+  outCard.style.display = 'block';
+  outTitle.textContent = docLabels[currentDoc] + ' yaratilmoqda...';
+  outReady.style.display = 'none';
+  outText.innerHTML = `<div class="loading-wrap"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div> AI yozmoqda, biroz kuting...</div>`;
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Yaratilmoqda...';
+  outCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompts[currentDoc] }]
+      })
     });
-  }
 
-  async function generate() {
-    if (currentPlan === 'free' && usedToday >= FREE_LIMIT) {
-      alert('Bugungi bepul limitingiz tugadi!\nPro ga o\'ting — cheksiz generatsiya.');
-      return;
-    }
+    const data = await res.json();
+    const result = data.content?.map(b => b.text || '').join('') || 'Xatolik yuz berdi.';
 
-    const name   = document.getElementById('f-name').value.trim() || 'Foydalanuvchi';
-    const job    = document.getElementById('f-job').value.trim() || 'Mutaxassis';
-    const exp    = document.getElementById('f-exp').value;
-    const lang   = document.getElementById('f-lang').value;
-    const skills = document.getElementById('f-skills').value.trim();
-    const extra  = document.getElementById('f-extra').value.trim();
+    outText.textContent = result;
+    outTitle.textContent = docLabels[currentDoc];
+    outReady.style.display = 'inline-block';
 
-    const langMap = { uz: "O'zbek tilida yoz", en: 'Write in English', ru: 'Напиши на русском языке' };
-    const docPrompts = {
-      cv: `Professional CV / Rezyume yarat. ${langMap[lang]}.\n\nIsm: ${name}\nKasb: ${job}\nTajriba: ${exp}\nKo'nikmalar: ${skills || 'ko\'rsatilmagan'}\nQo'shimcha: ${extra || 'yo\'q'}\n\nFaqat CV matnini yoz. Hech qanday izoh berma.`,
-      letter: `Motivatsion xat (Cover Letter) yarat. ${langMap[lang]}.\n\nIsm: ${name}\nKasb: ${job}\nTajriba: ${exp}\nKo'nikmalar: ${skills || 'ko\'rsatilmagan'}\nQo'shimcha: ${extra || 'yo\'q'}\n\nFaqat xat matnini yoz.`,
-      business: `Biznes taklif ariza yarat. ${langMap[lang]}.\n\nIsm: ${name}\nSoha: ${job}\nTajriba: ${exp}\nKo'nikmalar: ${skills || 'ko\'rsatilmagan'}\nQo'shimcha: ${extra || 'yo\'q'}\n\nFaqat ariza matnini yoz.`
-    };
+    // History qo'shish
+    historyItems.push({
+      type: currentDoc,
+      name: name,
+      time: 'Hozir',
+      lang: langLabel[lang]
+    });
+    totalDocs++;
 
-    const docLabels = { cv: 'CV / Rezyume', letter: 'Motivatsion xat', business: 'Biznes ariza' };
-
-    const outSection = document.getElementById('output-section');
-    const outText    = document.getElementById('out-text');
-    const outTitle   = document.getElementById('out-title');
-    const outBadge   = document.getElementById('out-badge');
-    const btn        = document.getElementById('gen-btn');
-
-    outSection.style.display = 'block';
-    outTitle.textContent = docLabels[currentDoc] + ' yaratilmoqda...';
-    outBadge.style.display = 'none';
-    outText.innerHTML = '<div class="loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div> AI yozmoqda...</div>';
-    btn.disabled = true;
-    btn.textContent = '⏳ Yaratilmoqda...';
-    outSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: docPrompts[currentDoc] }]
-        })
-      });
-      const data = await res.json();
-      const result = data.content?.map(b => b.text || '').join('') || 'Xatolik yuz berdi.';
-      outText.textContent = result;
-      outTitle.textContent = docLabels[currentDoc];
-      outBadge.style.display = 'inline-block';
+    if (currentPlan === 'free') {
       usedToday++;
-      if (currentPlan === 'free') {
-        const left = Math.max(0, FREE_LIMIT - usedToday);
-        document.getElementById('limit-text').textContent = left;
-      }
-    } catch (err) {
-      outText.textContent = 'Xatolik yuz berdi. Internet aloqasini tekshiring yoki sahifani yangilang.';
-      outTitle.textContent = 'Xatolik';
+      updateLimitDots();
     }
 
-    btn.disabled = false;
-    btn.textContent = '✦ AI bilan yaratish';
+  } catch (err) {
+    outText.textContent = '❌ Xatolik yuz berdi.\n\nSabablar:\n• Internet aloqasi yo\'q\n• API kalit noto\'g\'ri\n• Sahifani yangilang';
+    outTitle.textContent = 'Xatolik';
   }
+
+  btn.disabled = false;
+  btn.innerHTML = '<span>✦</span> AI bilan yaratish';
+}
+
+// ── INIT ──
+updateLimitDots();
 </script>
 </body>
 </html>
